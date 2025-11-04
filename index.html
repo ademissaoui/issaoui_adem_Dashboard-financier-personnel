@@ -1,11 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
-    
+    <body>
+        <div class="container">
+            <div class="slidebar">
+                <div class="header">
+                    <div class="logo">
+                        <img src="" alt="">
+                    </div>
+                    <h1 id="expenses_tracker" class="title">
+                        Dashboard <span>Financier</span>
+                    </h1>
+                </div>
+                <div class="balance-summary">
+                    <h3>Balance sumary</h3>
+                    <div class="label">Balance Total</div>
+                    <div class="total-balance" id="totalBalance">0TND</div>
+                    <div class="income-expense">
+                        <div>
+                            <div class="label">Revenue Total</div>
+                            <div class="income" id="totalIncome">0TND</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="add-transaction">
+                    <h3>Ajouter une nouvelle transaction</h3>
+                    <form class="form-grid" id="transactionForm">
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select name="type" id="type">
+                                <option>Revenu</option>
+                                <option>Dépenses</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Somme</label>
+                            <input type="text"
+                            placeholder="0.00TND"
+                            id="amount"
+                            name ="amount">
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="text"
+                            placeholder="mm/dd/yyyy"
+                            id="date"
+                            name="date">
+                        </div>
+                        <div class="form-group">
+                            <label>Catégorie</label>
+                            <input type="text"
+                            placeholder="e.g. Salaire , Les bénéfices ,Les courses etc..."
+                             id="category"
+                            name="category">
+                        </div>
+                        <input type="submit"
+                        role="button"
+                        class="add-btn"
+                        value="add-transaction">
+                        
+                    </form>
+                </div>
+            </div>
+            <div class="main-content">
+                <h2>Historiques des transacrions</h2>
+                <ul class="transacrion-list" id="transacrionList"></ul>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <img src="img.png" class="footer-logo">
+                    <p class="footer-text">Adem Aissaouiddd MI2B</p>
+                </div>
+            </div>
+        </footer>
+    </body>
 </body>
 </html>
