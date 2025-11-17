@@ -1,21 +1,20 @@
-
-
 document.addEventListener('DOMContentLoaded', function () {
-
-  const form = document.getElementById('transactionForm');
-  const listEl = document.getElementById('transactionList');
+  // Elements DOM principaux
+  const formulaire = document.getElementById('formulaireTransaction');
+  const listeEl = document.getElementById('listeTransactions');
   const totalBalanceEl = document.getElementById('totalBalance');
   const totalIncomeEl = document.getElementById('totalIncome');
   const totalExpenseEl = document.getElementById('totalExpense');
-  const canvas = document.getElementById('financeChart');
-  const themeToggleBtn = document.getElementById('themeToggle');
+  const canvas = document.getElementById('graphiqueFinance');
+  const boutonTheme = document.getElementById('boutonTheme');
 
-
+  // Variables de stockage
   let transactions = [];
-  let financeChart = null;
+  let graphique = null;
+  let themeActuel = 'dark';
 
-
-  function loadTransactions() {
+  // Charger les transactions depuis localStorage
+  function chargerTransactions() {
     try {
       const raw = localStorage.getItem('transactions');
       return raw ? JSON.parse(raw) : [];
@@ -25,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function saveTransactions() {
+  // Sauvegarder les transactions dans localStorage
+  function sauvegarderTransactions() {
     try {
       localStorage.setItem('transactions', JSON.stringify(transactions));
     } catch (e) {
@@ -33,122 +33,162 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-
-  function formatAmount(amount) {
-    return Number(amount).toLocaleString('fr-FR', {
+  // Formater un montant en format localise
+  function formaterMontant(montant) {
+    return Number(montant).toLocaleString('fr-FR', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }) + ' TND';
   }
 
-  function updateTotals() {
-    const income = transactions
+  function mettreAJourTotaux() {
+    // Calculer revenu total
+    const revenu = transactions
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + Number(t.amount), 0);
 
-    const expense = transactions
+    // Calculer depense totale
+    const depense = transactions
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + Number(t.amount), 0);
 
-    const total = income - expense;
+    // Calculer solde = revenu - depense
+    const total = revenu - depense;
 
-    totalIncomeEl.textContent = formatAmount(income);
-    totalExpenseEl.textContent = formatAmount(expense);
-    totalBalanceEl.textContent = formatAmount(total);
+    // Afficher les montants formatos
+    totalIncomeEl.textContent = formaterMontant(revenu);
+    totalExpenseEl.textContent = formaterMontant(depense);
+    totalBalanceEl.textContent = formaterMontant(total);
 
-    // Mettre à jour le graphique si disponible
-    updateChart(income, expense);
+    // Mettre a jour le graphique
+    mettreAJourGraphique(revenu, depense);
   }
 
+  function afficherTransactions() {
+    // Vider la liste
+    listeEl.innerHTML = '';
 
-  function renderTransactions() {
-    listEl.innerHTML = '';
-
+    // Si aucune transaction, afficher message
     if (!transactions.length) {
       const empty = document.createElement('li');
       empty.textContent = 'Aucune transaction pour le moment.';
       empty.className = 'empty';
-      listEl.appendChild(empty);
-      updateTotals();
+      listeEl.appendChild(empty);
+      mettreAJourTotaux();
       return;
     }
 
+    // Boucler sur chaque transaction et creer un element liste
     transactions.forEach(t => {
       const li = document.createElement('li');
-      li.className = 'transaction-item ' + (t.type === 'income' ? 'income' : 'expense');
+      li.className = 'element-transaction ' + (t.type === 'income' ? 'income' : 'expense');
 
-      // Section gauche : catégorie et date
-      const left = document.createElement('div');
-      left.className = 'transaction-left';
-      left.innerHTML = '<strong>' +
-        (t.category || (t.type === 'income' ? 'Revenu' : 'Dépense')) +
-        '</strong>' +
-        '<div class="tx-date">' + (t.date || '') + '</div>';
+      // Icone (gauche)
+      const icone = document.createElement('div');
+      icone.className = 'icone-transaction ' + (t.type === 'income' ? 'income' : 'expense');
+      icone.textContent = t.type === 'income' ? '＋' : '−';
 
-      // Section droite : montant et bouton supprimer
-      const right = document.createElement('div');
-      right.className = 'transaction-right';
-      right.innerHTML = '<div class="tx-amount">' + formatAmount(t.amount) + '</div>';
+      // Details (centre: categorie et date)
+      const details = document.createElement('div');
+      details.className = 'details-transaction';
 
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'delete-btn';
-      deleteBtn.textContent = '❌ Supprimer';
-      deleteBtn.type = 'button';
-      deleteBtn.style.fontSize = '12px';
-      deleteBtn.addEventListener('click', function (e) {
+      const nom = document.createElement('div');
+      nom.className = 'nom-transaction';
+      nom.textContent = t.category || (t.type === 'income' ? 'Revenu' : 'Depense');
+
+      const dateElem = document.createElement('div');
+      dateElem.className = 'date-transaction';
+      dateElem.textContent = t.date || '';
+
+      details.appendChild(nom);
+      details.appendChild(dateElem);
+
+      // Montant et bouton supprimer (droite)
+      const montantWrap = document.createElement('div');
+      montantWrap.style.display = 'flex';
+      montantWrap.style.alignItems = 'center';
+      montantWrap.style.gap = '12px';
+
+      const montant = document.createElement('div');
+      montant.className = 'montant-transaction ' + (t.type === 'income' ? 'income' : 'expense');
+      montant.textContent = formaterMontant(t.amount);
+
+      // Bouton supprimer
+      const btnSuppr = document.createElement('button');
+      btnSuppr.type = 'button';
+      btnSuppr.className = 'transaction-delete';
+      btnSuppr.setAttribute('aria-label', 'Supprimer la transaction');
+      btnSuppr.textContent = '❌';
+      btnSuppr.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        deleteTransaction(t.id);
+        supprimerTransaction(t.id);
       });
 
-      right.appendChild(deleteBtn);
-      li.appendChild(left);
-      li.appendChild(right);
-      listEl.appendChild(li);
+      montantWrap.appendChild(montant);
+      montantWrap.appendChild(btnSuppr);
+
+      li.appendChild(icone);
+      li.appendChild(details);
+      li.appendChild(montantWrap);
+
+      listeEl.appendChild(li);
     });
 
-    updateTotals();
+    mettreAJourTotaux();
   }
 
-  function addTransaction(transaction) {
-    transactions.unshift(transaction); // plus récente en premier
-    saveTransactions();
-    renderTransactions();
+  function ajouterTransaction(tx) {
+    // Ajouter au debut de la liste
+    transactions.unshift(tx);
+    sauvegarderTransactions();
+    // Rafraichir l'affichage
+    afficherTransactions();
   }
 
-  function deleteTransaction(id) {
+  function supprimerTransaction(id) {
+    // Filtrer et retirer la transaction
     transactions = transactions.filter(t => t.id !== id);
-    saveTransactions();
-    renderTransactions();
+    // Sauvegarder
+    sauvegarderTransactions();
+    // Rafraichir l'affichage
+    afficherTransactions();
   }
 
-  form.addEventListener('submit', function (e) {
+  // Gestion du formulaire d'ajout
+  formulaire.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const type = form.type.value;
-    const amount = parseFloat(form.amount.value);
-    const date = form.date.value;
-    const category = form.category.value.trim();
+    // Recuperer les donnees du formulaire
+    const type = formulaire.type.value;
+    const montant = parseFloat(formulaire.amount.value);
+    const date = formulaire.date.value;
+    const category = formulaire.category.value.trim();
 
-    if (isNaN(amount) || amount <= 0) {
-      alert('Veuillez saisir un montant valide supérieur à 0');
+    // Verifier le montant
+    if (isNaN(montant) || montant <= 0) {
+      alert('Veuillez saisir un montant valide superieur a 0');
       return;
     }
 
+    // Creer la transaction
     const tx = {
       id: Date.now().toString(),
       type: type === 'income' ? 'income' : 'expense',
-      amount: Math.abs(amount),
+      amount: Math.abs(montant),
       date: date,
       category: category
     };
 
-    addTransaction(tx);
-    form.reset();
+    // Ajouter et reinitialiser le formulaire
+    ajouterTransaction(tx);
+    formulaire.reset();
   });
 
-  function initChart() {
+  function initialiserGraphique() {
+    // Verifier que le canvas existe
     if (!canvas) return;
+    // Verifier que Chart.js est charge
     if (typeof Chart === 'undefined') {
       console.warn('Chart.js non disponible');
       return;
@@ -156,14 +196,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     try {
       const ctx = canvas.getContext('2d');
-      financeChart = new Chart(ctx, {
+      // Creer le graphique en barres
+      graphique = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Revenu', 'Dépense'],
+          labels: ['Revenu', 'Depense'],
           datasets: [{
             label: 'Montants (TND)',
             data: [0, 0],
-            backgroundColor: ['#00c48c', '#ff5c5c']
+            backgroundColor: ['#22c55e', '#ef4444']
           }]
         },
         options: {
@@ -179,32 +220,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function updateChart(income, expense) {
-    if (!financeChart || !financeChart.data || !financeChart.data.datasets) return;
-    financeChart.data.datasets[0].data = [income, expense];
-    financeChart.update();
+  // Mettre a jour les donnees du graphique
+  function mettreAJourGraphique(revenu, depense) {
+    if (!graphique || !graphique.data || !graphique.data.datasets) return;
+    graphique.data.datasets[0].data = [revenu, depense];
+    graphique.update();
   }
 
-  let currentTheme = 'dark';
-
-  function applyTheme(theme) {
-    currentTheme = theme;
-    if (theme === 'light') {
-      document.body.classList.add('light-theme');
-      if (themeToggleBtn) {
-        themeToggleBtn.textContent = '☀️';
-        themeToggleBtn.setAttribute('data-theme', 'light');
-      }
-    } else {
-      document.body.classList.remove('light-theme');
-      if (themeToggleBtn) {
-        themeToggleBtn.textContent = '🌙';
-        themeToggleBtn.setAttribute('data-theme', 'dark');
-      }
-    }
-  }
-
-  function loadTheme() {
+  // Charger le theme depuis localStorage
+  function chargerTheme() {
     try {
       const t = localStorage.getItem('theme');
       return t === 'light' ? 'light' : 'dark';
@@ -213,33 +237,51 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function saveTheme(theme) {
+  // Sauvegarder le choix de theme
+  function sauvegarderTheme(theme) {
     try {
       localStorage.setItem('theme', theme);
     } catch (e) {
-      console.error('Erreur sauvegarde thème', e);
+      console.error('Erreur sauvegarde theme', e);
     }
   }
 
-
-  currentTheme = loadTheme();
-  applyTheme(currentTheme);
-
-e
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      const next = currentTheme === 'light' ? 'dark' : 'light';
-      applyTheme(next);
-      saveTheme(next);
-      console.log('Thème basculé vers:', next);
-    });
-  } else {
-    console.warn('themeToggle button non trouvé');
+  // Appliquer le theme a l'interface
+  function appliquerTheme(theme) {
+    themeActuel = theme;
+    if (theme === 'light') {
+      // Activer le mode clair
+      document.body.classList.add('light-theme');
+      if (boutonTheme) {
+        boutonTheme.textContent = '☀️';
+      }
+    } else {
+      // Activer le mode sombre
+      document.body.classList.remove('light-theme');
+      if (boutonTheme) {
+        boutonTheme.textContent = '🌙';
+      }
+    }
   }
 
-  transactions = loadTransactions();
-  initChart();
-  renderTransactions();
+  // Charger et appliquer le theme initial
+  themeActuel = chargerTheme();
+  appliquerTheme(themeActuel);
+
+  // Ecouter le clic sur le bouton theme
+  if (boutonTheme) {
+    boutonTheme.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Basculer entre sombre et clair
+      const next = themeActuel === 'light' ? 'dark' : 'light';
+      appliquerTheme(next);
+      sauvegarderTheme(next);
+    });
+  }
+
+  // Initialisation complete
+  transactions = chargerTransactions();
+  initialiserGraphique();
+  afficherTransactions();
 });

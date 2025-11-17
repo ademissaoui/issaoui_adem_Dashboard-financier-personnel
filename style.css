@@ -220,13 +220,13 @@ body {
     margin-bottom: 24px;
 }
 
-.transaction-list {
+.liste-transactions {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.transaction-item {
+.element-transaction {
     display: flex;
     align-items: center;
     padding: 16px;
@@ -237,14 +237,13 @@ body {
     cursor: pointer;
 }
 
-.transaction-item:hover {
+.element-transaction:hover {
     background-color: #141414;
     border-color: #404040;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
-
-.transaction-icon {
+.icone-transaction {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -256,42 +255,42 @@ body {
     font-weight: bold;
 }
 
-.transaction-icon.income {
+.icone-transaction.income {
     background-color: #22c55e;
     color: #ffffff;
 }
 
-.transaction-icon.expense {
+.icone-transaction.expense {
     background-color: #ef4444;
     color: #ffffff;
 }
 
-.transaction-details {
-    
+.details-transaction {
+    flex: 1;
 }
 
-.transaction-name {
+.nom-transaction {
     font-size: 16px;
     font-weight: 500;
     color: #ffffff;
     margin-bottom: 4px;
 }
 
-.transaction-date {
+.date-transaction {
     font-size: 14px;
     color: #999999;
 }
 
-.transaction-amount {
+.montant-transaction {
     font-size: 16px;
     font-weight: 600;
 }
 
-.transaction-amount.income {
+.montant-transaction.income {
     color: #22c55e;
 }
 
-.transaction-amount.expense {
+.montant-transaction.expense {
     color: #ef4444;
 }
 
@@ -344,18 +343,18 @@ body {
         padding: 12px;
     }
 
-    .transaction-icon {
+    .icone-transaction {
         width: 36px;
         height: 36px;
         margin-right: 12px;
         font-size: 14px;
     }
 
-    .transaction-name {
+    .nom-transaction {
         font-size: 15px;
     }
 
-    .transaction-amount {
+    .montant-transaction {
         font-size: 15px;
     }
 }
@@ -624,11 +623,11 @@ body.light-theme .transaction-item:hover {
     box-shadow: 0 6px 18px rgba(2,6,23,0.06);
 }
 
-body.light-theme .transaction-amount.income {
-    color: #059669; /* green */
+body.light-theme .montant-transaction.income {
+    color: #059669;
 }
 
-body.light-theme .transaction-amount.expense {
+body.light-theme .montant-transaction.expense {
     color: #dc2626; 
 }
 body.light-theme .delete-btn:hover {

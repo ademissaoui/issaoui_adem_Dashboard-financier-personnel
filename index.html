@@ -7,18 +7,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Container principal -->
     <div class="container">
+        <!-- Barre laterale avec formulaire -->
         <aside class="sidebar">
             <div class="header">
+                <!-- Logo -->
                 <div class="logo">
                     <img src="img.png" alt="logo" />
                 </div>
+                <!-- Titre principal -->
                 <h1 id="expenses_tracker" class="title">Dashboard <span>Financier</span></h1>
-                <button id="themeToggle" class="theme-toggle" aria-label="Basculer thème">🌙</button>
+                <!-- Bouton basculement theme sombre/clair -->
+                <button id="boutonTheme" class="theme-toggle" aria-label="Basculer theme">🌙</button>
             </div>
 
+            <!-- Resume du solde et totaux -->
             <div class="balance-summary">
-                <h3>Résumé du solde</h3>
+                <h3>Resume du solde</h3>
                 <div class="label">Solde total</div>
                 <div class="total-balance" id="totalBalance">0 TND</div>
                 <div class="income-expense">
@@ -27,15 +33,16 @@
                         <div class="income" id="totalIncome">0 TND</div>
                     </div>
                     <div>
-                        <div class="label">Dépense totale</div>
+                        <div class="label">Depense totale</div>
                         <div class="expense" id="totalExpense">0 TND</div>
                     </div>
                 </div>
             </div>
 
+            <!-- Formulaire d'ajout de transaction -->
             <div class="add-transaction">
                 <h3>Ajouter une nouvelle transaction</h3>
-                <form class="form-grid" id="transactionForm">
+                <form class="form-grid" id="formulaireTransaction">
                     <div class="form-group">
                         <label for="type">Type</label>
                         <select name="type" id="type">
@@ -64,17 +71,20 @@
             </div>
         </aside>
 
+        <!-- Zone principale affichant les transactions -->
         <main class="main-content">
             <h2>Historique des transactions</h2>
-            <ul class="transaction-list" id="transactionList"></ul>
+            <ul class="liste-transactions" id="listeTransactions"></ul>
+            <!-- Graphique revenus vs depenses -->
             <section class="chart-section">
-            <h2>Graphique Revenu vs Dépense</h2>
-            <canvas id="financeChart" width="400" height="200"></canvas>
+            <h2>Graphique Revenu vs Depense</h2>
+            <canvas id="graphiqueFinance" width="400" height="200"></canvas>
             </section>
 
         </main>
     </div>
 
+    <!-- Pied de page -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
@@ -82,7 +92,9 @@
             </div>
         </div>
     </footer>
+    //Librairie Chart.js depuis CDN
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Script principal de l'application -->
     <script src="program.js"></script>
 
 </body>
