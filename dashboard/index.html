@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard financier</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Container principal -->
+    <div class="container">
+        <!-- Barre laterale avec formulaire -->
+        <aside class="sidebar">
+            <div class="header">
+                <!-- Logo -->
+                <div class="logo">
+                    <img src="img.png" alt="logo" />
+                </div>
+                <!-- Titre principal -->
+                <h1 id="expenses_tracker" class="title">Dashboard <span>Financier</span></h1>
+                <!-- Bouton basculement theme sombre/clair -->
+                <button id="boutonTheme" class="theme-toggle" aria-label="Basculer theme">🌙</button>
+            </div>
+
+            <!-- Resume du solde et totaux -->
+            <div class="balance-summary">
+                <h3>Resume du solde</h3>
+                <div class="label">Solde total</div>
+                <div class="total-balance" id="totalBalance">0 TND</div>
+                <div class="income-expense">
+                    <div>
+                        <div class="label">Revenu total</div>
+                        <div class="income" id="totalIncome">0 TND</div>
+                    </div>
+                    <div>
+                        <div class="label">Depense totale</div>
+                        <div class="expense" id="totalExpense">0 TND</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire d'ajout de transaction -->
+            <div class="add-transaction">
+                <h3>Ajouter une nouvelle transaction</h3>
+                <form class="form-grid" id="formulaireTransaction">
+                    <div class="form-group">
+                        <label for="type">Type</label>
+                        <select name="type" id="type">
+                            <option value="income">Revenu</option>
+                            <option value="expense">Dépense</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Somme</label>
+                        <input type="number" step="0.01" min="0" placeholder="0.00" id="amount" name="amount" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Catégorie</label>
+                        <input type="text" placeholder="Ex: Salaire, Courses, Loisirs" id="category" name="category">
+                    </div>
+
+                    <input type="submit" role="button" class="add-btn" value="Ajouter la transaction">
+                </form>
+            </div>
+        </aside>
+
+        <!-- Zone principale affichant les transactions -->
+        <main class="main-content">
+            <h2>Historique des transactions</h2>
+            <ul class="liste-transactions" id="listeTransactions"></ul>
+            <!-- Graphique revenus vs depenses -->
+            <section class="chart-section">
+            <h2>Graphique Revenu vs Depense</h2>
+            <canvas id="graphiqueFinance" width="400" height="200"></canvas>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <p class="footer-text">Adem Aissaoui MI2B</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Script principal de l'application -->
+    <script src="program.js"></script>
+
+</body>
+</html>
